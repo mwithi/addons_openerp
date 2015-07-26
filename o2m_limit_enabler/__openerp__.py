@@ -15,8 +15,6 @@ Example:
     <tree string="MyField">
         ...
     </tree>
-    
-.. image:: /o2m_limit_enabler/static/img/o2m_screenshot.png
         """,
     'author': 'Alessandro Domanico (alessandro.domanico@informaticisenzafrontiere.org)',
     'website': 'www.informaticisenzafrontiere.org',
@@ -24,9 +22,6 @@ Example:
     'depends': ['web'],
     'js' : [
         'static/src/js/view_form.js',
-    ],
-    'images' : [
-        'o2m_limit_enabler/static/img/o2m_screenshot.png',
     ],
     'installable' : True,
 }
