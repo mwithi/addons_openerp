@@ -1,6 +1,6 @@
 {
     'name': 'One2Many Limit Enabler',
-    'category': 'Tools',
+    'category': 'Extra Tools',
     'version': '0.1',
     'description':
         """
