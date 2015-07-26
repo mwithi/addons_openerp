@@ -11,14 +11,22 @@ This module enables 'limit' attribute on one2many fields in order to set the pag
 
 Example:
 
-<field name="MyOne2ManyField" limit="2000">
+<field name="MyOne2ManyField" limit="123">
+    <tree string="MyField">
+        ...
+    </tree>
+    
+.. image:: /o2m_limit_enabler/static/img/o2m_screenshot.png
         """,
     'author': 'Alessandro Domanico (alessandro.domanico@informaticisenzafrontiere.org)',
     'website': 'www.informaticisenzafrontiere.org',
     'license': 'AGPL-3',
     'depends': ['web'],
     'js' : [
-        "static/src/js/view_form.js",
+        'static/src/js/view_form.js',
+    ],
+    'images' : [
+        'o2m_limit_enabler/static/img/o2m_screenshot.png',
     ],
     'installable' : True,
 }
