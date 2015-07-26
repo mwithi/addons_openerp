@@ -1,0 +1,1 @@
+import isf_account_financial_report
