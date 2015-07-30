@@ -12,7 +12,16 @@
         </div>
         <div class="oe_span6">
             <p class="oe_mt32">
-Allows you to define the pagination limit on one2many field default widget
+Allows you to define the pagination limit on one2many field default widget:
+            </p>
+            <p class="oe_mt32">
+Example:
+<pre>
+<field name="MyOne2ManyField" limit="123">
+    <tree string="MyField">
+        ...
+    </tree>
+</pre>
             </p>
         </div>
     </div>
