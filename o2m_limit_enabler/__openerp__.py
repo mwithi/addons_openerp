@@ -23,5 +23,8 @@ Example:
     'js' : [
         'static/src/js/view_form.js',
     ],
+    'images': [
+        'description/o2m_screenshot.jpg',
+    ],
     'installable' : True,
 }
