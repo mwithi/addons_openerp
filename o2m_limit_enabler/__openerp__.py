@@ -2,6 +2,7 @@
     'name': 'One2Many Limit Enabler',
     'category': 'Extra Tools',
     'version': '0.1',
+    'license': 'AGPL-3',
     'description':
         """
 One2Many limit enabler.
