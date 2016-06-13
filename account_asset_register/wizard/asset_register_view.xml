@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+    <!--
+        webkit_header="base_headers_webkit.base_reports_portrait_header"
+    -->
+
+    <record id="asset_register_webkit_header" model="ir.header_webkit">
+        <field name="footer_html"><![CDATA[]]></field>
+        <field name="orientation">Landscape</field>
+        <field name="format">A4</field>
+        <field name="html"><![CDATA[
+<html>
+   <head>
+       <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+       <script>
+           function subst() {
+           var vars={};
+           var x=document.location.search.substring(1).split('&');
+           for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+           var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+           for(var i in x) {
+           var y = document.getElementsByClassName(x[i]);
+           for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+               }
+           }
+       </script>
+       <style type="text/css">
+       
+           ${css}
+       </style>
+   </head>
+   <body style="border:0; margin: 0;" onload="subst()">
+       <table class="header" style="border-bottom: 1px solid black; width: 100%">
+           <tr >
+               <td style="text-align:left;font-size:10;" width="15%">${time.strftime('%d/%m/%Y %I:%M')}</td>
+               <td style="text-align:center;font-size:12;" width="70%">${company.partner_id.name |entity}</td>
+               <td style="text-align:right;font-size:10;" width="8%">  </td>
+               <td style="text-align:left;font-size:10;" width="3%"><span class="page"/>  </td>
+               <td style="text-align:left;font-size:10;" width="1%"> /</td>
+               <td style="text-align:right;font-size:10;" width="3%"><span class="topage"/></td>
+           </tr>
+       </table> ${_debug or ''|n} </body>
+</html>
+        ]]>
+        </field>
+        <field eval="25.0" name="margin_top"/>
+        <field eval="5.0" name="margin_bottom"/>
+        <field name="css"><![CDATA[
+body, table, td, span, div {
+    font-family: Helvetica, Arial;
+}
+
+body {
+	font-family:Arial;
+	font-size:12;
+}
+
+.header {
+    margin-left:0;
+    text-align:left;
+    width:300px;
+    font-size:12;
+}
+
+.title {
+	font-size:16;
+	font-weight: bold;
+}
+
+
+.basic_table{
+	text-align:center;
+	border:1px solid lightGrey;
+	border-collapse: collapse;
+}
+
+.basic_table td {
+	border:1px solid lightGrey;
+	font-size:12;
+}
+
+.row { 
+    width: "100%";
+    border-top: thin solid  #ffffff ;
+    font-size:12;
+}
+
+tfoot.totals tr:first-child td{
+    padding-top: 15px;
+}
+
+.label {
+    width: 80%;
+}
+
+.currency {
+    width: "10%";
+    text-align: right;
+    white-space: nowrap;
+}
+
+.tr_bottom_line{
+    border-bottom: thin solid black;
+    width:100%;
+}
+
+tr.table_header{
+    font-weight: bold;
+    font-family: sans-serif, serif;
+    font-size: 14px;
+    caption-side: top;
+    padding: 5px;
+}
+ ]]>
+    </field>
+        <field name="name">Fixed Asset Register Webkit Header</field>
+    </record>
+
+    <report id="asset_register"
+            name="asset.register.webkit"
+            auto="False"
+            menu="False"
+            model="asset.register"
+            webkit_header="asset_register_webkit_header"
+            file="account_asset_register/report/asset_register.mako"
+            string="Asset Register"
+            header="True"
+            report_type="webkit"/>
+
+    <record id="view_isf_asset_register_form" model="ir.ui.view">
+        <field name="name">asset.register.form</field>
+        <field name="model">asset.register</field>
+        <field name="arch" type="xml">
+            <form string="Asset Register" version="7.0" create="false">
+            	<group>
+                	<field name="fiscalyear_id" />
+                </group>
+                <group>
+                	<field name="asset_category_ids" />
+                </group>
+                <footer>
+                    <button name="%(asset_register)d" string="Asset Register" type="action" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="action_asset_register_tree" model="ir.actions.act_window">
+        <field name="name">Fixed Asset Register</field>
+        <field name="res_model">asset.register</field>
+        <field name="view_type">tree</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_isf_asset_register_form"/>
+    </record>
+
+    <menuitem icon="STOCK_PRINT" name="Asset Register" action="action_asset_register_tree" id="menu_account_report_ar" parent="account.final_accounting_reports"/>
+
+  </data>
+  
+  
+</openerp>
