@@ -107,7 +107,7 @@
 					    <td></td>
 					%endif
 	        		<td class="dates">${line['date_start']}</td>
-	        		<td class="values">${line['asset_value']}</td>
+	        		<td class="values">${line['purchase_value']}</td>
 	        		%if line['revaluated_value']:
 	        			<td class="values">${line['revaluated_value']}</td>
 					%else:
@@ -126,7 +126,7 @@
 	        		<td>${line['category']}</td>
 	        		<td></td>
 					<td></td>
-	        		<td class="values">${line['asset_value']}</td>
+	        		<td class="values">${line['purchase_value']}</td>
 	        		%if line['revaluated_value']:
 	        			<td class="values">${line['revaluated_value']}</td>
 					%else:
@@ -146,7 +146,7 @@
 	        		<td></td>
 	        		<td></td>
 					<td></td>
-	        		<td class="values">${line['asset_value']}</td>
+	        		<td class="values">${line['purchase_value']}</td>
 	        		%if line['revaluated_value']:
 	        			<td class="values">${line['revaluated_value']}</td>
 					%else:

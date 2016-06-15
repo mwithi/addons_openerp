@@ -29,18 +29,18 @@ class asset_register(orm.Model):
     _description = "Fixed Assets Register View"
     _auto = False
     _columns = {
-        'category_id' : fields.char('Year', size=16, required=False, readonly=True),
-        'category' : fields.char('Year', size=16, required=False, readonly=True),
-        'factor' : fields.char('Year', size=16, required=False, readonly=True),
-        'code' : fields.char('Year', size=16, required=False, readonly=True),
-        'asset' : fields.char('Year', size=16, required=False, readonly=True),
-        'date_purchase' : fields.char('Year', size=16, required=False, readonly=True),
-        'date_start' : fields.char('Year', size=16, required=False, readonly=True),
-        'asset_value' : fields.char('Year', size=16, required=False, readonly=True),
-        'revaluated_value' : fields.char('Year', size=16, required=False, readonly=True),
-        'previous_value' : fields.char('Year', size=16, required=False, readonly=True),
-        'accumulated_depreciation_previous_years' : fields.char('Year', size=16, required=False, readonly=True),
-        'depreciation_current_year' : fields.char('Year', size=16, required=False, readonly=True),
+        'category_id' : fields.char('category_id', size=16, required=False, readonly=True),
+        'category' : fields.char('category', size=16, required=False, readonly=True),
+        'factor' : fields.char('factor', size=16, required=False, readonly=True),
+        'code' : fields.char('code', size=16, required=False, readonly=True),
+        'asset' : fields.char('asset', size=16, required=False, readonly=True),
+        'date_purchase' : fields.char('date_purchase', size=16, required=False, readonly=True),
+        'date_start' : fields.char('date_start', size=16, required=False, readonly=True),
+        'purchase_value' : fields.char('purchase_value', size=16, required=False, readonly=True),
+        'revaluated_value' : fields.char('revaluated_value', size=16, required=False, readonly=True),
+        'previous_value' : fields.char('previous_value', size=16, required=False, readonly=True),
+        'accumulated_depreciation_previous_years' : fields.char('accumulated_depreciation_previous_years', size=16, required=False, readonly=True),
+        'depreciation_current_year' : fields.char('depreciation_current_year', size=16, required=False, readonly=True),
     }
 
 class asset_register_parser(report_sxw.rml_parse):
@@ -52,15 +52,15 @@ class asset_register_parser(report_sxw.rml_parse):
         cr.execute("""
             create or replace view asset_register_view as (
                 select
-                    a.id,
                     a.category_id,
+                    a.id,
                     c.name as category,
                     case when c.method = 'linear' then 1::float / c.method_number else c.method_progress_factor end as factor, 
                     a.code, 
                     a.name as asset, 
                     a.date_purchase,
                     a.date_start,
-                    a.asset_value,
+                    a.purchase_value,
                     (select r.revaluated_value from account_asset_revaluation r where r.asset_id = a.id order by r.id desc limit 1) as revaluated_value,
                     (select r.previous_value from account_asset_revaluation r where r.asset_id = a.id order by r.id asc limit 1) as previous_value,
                     -- CALCULATED AFTER (accumulated_depreciation_previous_years + depreciation_current_year) as accumulated_depreciation,
@@ -149,13 +149,12 @@ class asset_register_parser(report_sxw.rml_parse):
         return self.result_date
     
     def _format_fields(self, res):
-        if res['revaluated_value']:
-            formatted_value = locale.format("%0.2f", res['revaluated_value'], grouping=True)
-            if res['revaluated_value'] == res['asset_value']:
-                res['revaluated_value'] = '(' + formatted_value + ')'
-            else:
-                res['revaluated_value'] = formatted_value
-        res['asset_value'] = locale.format("%0.2f", res['asset_value'], grouping=True)
+        formatted_value = locale.format("%0.2f", res['revaluated_value'], grouping=True)
+        if res['revaluated_value'] == res['purchase_value']:
+            res['revaluated_value'] = '(' + formatted_value + ')'
+        else:
+            res['revaluated_value'] = formatted_value
+        res['purchase_value'] = locale.format("%0.2f", res['purchase_value'], grouping=True)
         res['accumulated_depreciation'] = locale.format("%0.2f", res['accumulated_depreciation'], grouping=True)
         res['accumulated_depreciation_previous_years'] = locale.format("%0.2f", res['accumulated_depreciation_previous_years'], grouping=True)
         res['depreciation_current_year'] = locale.format("%0.2f", res['depreciation_current_year'], grouping=True)
@@ -164,7 +163,7 @@ class asset_register_parser(report_sxw.rml_parse):
         
     def _get_totals(self):
         res = {}    
-        res['asset_value'] = 0
+        res['purchase_value'] = 0
         res['revaluated_value'] = 0
         res['accumulated_depreciation_previous_years'] = 0
         res['depreciation_current_year'] = 0
@@ -205,7 +204,7 @@ class asset_register_parser(report_sxw.rml_parse):
         self._update_view(self.cr, self.uid, params)
         
         obj_depreciation_line = self.pool.get('asset.register.view')
-        depreciation_lines_ids = obj_depreciation_line.search(self.cr, self.uid, [])
+        depreciation_lines_ids = obj_depreciation_line.search(self.cr, self.uid, [], order="category_id asc, id asc")
         depreciation_lines = obj_depreciation_line.browse(self.cr, self.uid, depreciation_lines_ids)
         
         index = 0
@@ -223,7 +222,7 @@ class asset_register_parser(report_sxw.rml_parse):
                     res = {}
                     res['type'] = 'subtotal'
                     res['category'] = category
-                    res['asset_value'] = cat_totals['asset_value']
+                    res['purchase_value'] = cat_totals['purchase_value']
                     res['revaluated_value'] = cat_totals['revaluated_value']
                     res['accumulated_depreciation_previous_years'] = cat_totals['accumulated_depreciation_previous_years']
                     res['depreciation_current_year'] = cat_totals['depreciation_current_year']
@@ -251,22 +250,22 @@ class asset_register_parser(report_sxw.rml_parse):
             res['asset'] = line.asset
             res['date_purchase'] = line.date_purchase
             res['date_start'] = line.date_start
-            res['asset_value'] = line.asset_value
+            res['purchase_value'] = line.purchase_value
             res['revaluated_value'] = line.revaluated_value
             res['accumulated_depreciation_previous_years'] = line.accumulated_depreciation_previous_years or 0
             res['depreciation_current_year'] = line.depreciation_current_year
              
             #calculated fields
-            if res['revaluated_value']:
-                res['asset_value'] = line.previous_value
-            else:
-                res['revaluated_value'] = res['asset_value']
+            if res['revaluated_value'] is False:
+                res['revaluated_value'] = res['purchase_value']
             res['accumulated_depreciation'] = res['accumulated_depreciation_previous_years'] + res['depreciation_current_year']
             res['depreciation_monthly_period'] = res['depreciation_current_year'] / fy_duration_months
             res['net_value'] = res['revaluated_value'] - res['accumulated_depreciation']
+            if res['net_value'] < 0.0:
+                res['net_value'] = 0.0
             
             #totals for current category
-            cat_totals['asset_value'] += res['asset_value']
+            cat_totals['purchase_value'] += res['purchase_value']
             cat_totals['revaluated_value'] += res['revaluated_value']
             cat_totals['accumulated_depreciation_previous_years'] += res['accumulated_depreciation_previous_years']
             cat_totals['depreciation_current_year'] += res['depreciation_current_year']
@@ -275,7 +274,7 @@ class asset_register_parser(report_sxw.rml_parse):
             cat_totals['net_value'] += res['net_value']
                         
             #overall totals
-            totals['asset_value'] += res['asset_value']
+            totals['purchase_value'] += res['purchase_value']
             totals['revaluated_value'] += res['revaluated_value']
             totals['accumulated_depreciation_previous_years'] += res['accumulated_depreciation_previous_years']
             totals['depreciation_current_year'] += res['depreciation_current_year']
@@ -291,7 +290,7 @@ class asset_register_parser(report_sxw.rml_parse):
         res = {}
         res['category'] = category
         res['type'] = 'subtotal'
-        res['asset_value'] = cat_totals['asset_value']
+        res['purchase_value'] = cat_totals['purchase_value']
         res['revaluated_value'] = cat_totals['revaluated_value']
         res['accumulated_depreciation_previous_years'] = cat_totals['accumulated_depreciation_previous_years']
         res['depreciation_current_year'] = cat_totals['depreciation_current_year']
@@ -306,7 +305,7 @@ class asset_register_parser(report_sxw.rml_parse):
         #overall total
         res = {}
         res['type'] = 'total'
-        res['asset_value'] = totals['asset_value']
+        res['purchase_value'] = totals['purchase_value']
         res['revaluated_value'] = totals['revaluated_value']
         res['accumulated_depreciation_previous_years'] = totals['accumulated_depreciation_previous_years']
         res['depreciation_current_year'] = totals['depreciation_current_year']
