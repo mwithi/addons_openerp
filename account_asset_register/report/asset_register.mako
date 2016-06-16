@@ -3,6 +3,11 @@
 <head>
     <style type="text/css">
         ${css}
+        
+        body {
+		    font-size: xx-small;
+		}
+
 		table {
 		    border-spacing: 0px;
 		    page-break-inside: auto
@@ -77,65 +82,62 @@
 
     <table style="width: 100%; font-size: 12px;">
         <tr>
-        	<th class="labels"> ID </th>
-            <th width="8%" class="labels"> Code </th>
-            <th width="20%" class="labels"> Name </th>
-            <th> Purchase<br />Date </th>
-            <th> Depreciation<br /> Start Date </th>
-            <th width="8%" class="values"> Purchase Price</th>
-            <th width="8%" class="values"> Revaluated / Devaluated<br />Value</th>
-            <th width="8%" class="values"> Accumulated Depreciation</th>
-            <th width="8%" class="values"> Accumulated Depreciation Previous Years</th>
-            <th width="8%" class="values"> Depreciation Current Year</th>
-            <th width="8%" class="values"> Depreciation Monthly Period </th>
-            <th width="8%" class="values"> Net Book Value</th>
+        	<th class="labels">ID</th>
+            <th width="7%" class="labels">Code</th>
+            <th width="13%" class="labels">Name</th>
+            
+            <th>Depreciation<br />Start Date</th>
+            <th width="7%" class="values">Opening Value</th>
+            <th width="7%" class="values">Revaluation</th>
+            <th width="7%" class="values">Devaluation</th>
+            <th width="7%" class="values">Disposal</th>
+            <th width="8%" class="values">Gross Book<br />Value</th>
+            <th width="7%" class="values">Profit / (Loss)<br />on Disposal</th>
+            <th width="7%" class="values">Accumulated Depreciation<br />Previous Years</th>
+            <th width="7%" class="values">Depreciation Current Year</th>
+            <th width="7%" class="values">Write off<br />Accumulated Depreciation</th>
+            <th width="7%" class="values">Total Depreciation</th>
+            <th width="8%" class="values">Net Book<br />Value</th>
         </tr>
         %for line in lines():
         	%if line['type'] == 'category':
 	        	<tr class="category">
 	        		<td></td>
-	    			<td colspan="11">${line['category']}</td>
+	    			<td colspan="14">${line['category']}</td>
 	    		</tr>
 			%elif line['type'] == 'asset':
 				<tr>
 	        		<td>${line['id']}</td>
 	        		<td>${line['code']}</td>
 	        		<td>${line['asset']}</td>
-	        		%if line['date_purchase']:
-	        			<td class="dates">${line['date_purchase']}</td>
-					%else:
-					    <td></td>
-					%endif
 	        		<td class="dates">${line['date_start']}</td>
-	        		<td class="values">${line['purchase_value']}</td>
-	        		%if line['revaluated_value']:
-	        			<td class="values">${line['revaluated_value']}</td>
-					%else:
-					    <td></td>
-					%endif
-	        		<td class="values">${line['accumulated_depreciation']}</td>
+	        		<td class="values">${line['opening_cost']}</td>
+	        		<td class="values">${line['revaluation']}</td>
+	        		<td class="values">${line['devaluation']}</td>
+	        		<td class="values">${line['disposal_value']}</td>
+	        		<td class="values">${line['gross_book_value']}</td>
+	        		<td class="values">${line['profit_loss_disposal']}</td>
 	        		<td class="values">${line['accumulated_depreciation_previous_years']}</td>
 	        		<td class="values">${line['depreciation_current_year']}</td>
-	        		<td class="values">${line['depreciation_monthly_period']}</td>
+	        		<td class="values">${line['write_off_accumulated_depreciation']}</td>
+	        		<td class="values">${line['accumulated_depreciation']}</td>
 	        		<td class="values">${line['net_value']}</td>
 	        	</tr>
         	%elif line['type'] == 'subtotal':
 	        	<tr class="subtotal">
 	        		<td></td>
 	        		<td>Sub-Total</td>
-	        		<td>${line['category']}</td>
-	        		<td></td>
-					<td></td>
-	        		<td class="values">${line['purchase_value']}</td>
-	        		%if line['revaluated_value']:
-	        			<td class="values">${line['revaluated_value']}</td>
-					%else:
-					    <td></td>
-					%endif
-	        		<td class="values">${line['accumulated_depreciation']}</td>
+	        		<td colspan="2">${line['category']}</td>
+	        		<td class="values">${line['opening_cost']}</td>
+	        		<td class="values">${line['revaluation']}</td>
+	        		<td class="values">${line['devaluation']}</td>
+	        		<td class="values">${line['disposal_value']}</td>
+	        		<td class="values">${line['gross_book_value']}</td>
+	        		<td class="values">${line['profit_loss_disposal']}</td>
 	        		<td class="values">${line['accumulated_depreciation_previous_years']}</td>
 	        		<td class="values">${line['depreciation_current_year']}</td>
-	        		<td class="values">${line['depreciation_monthly_period']}</td>
+	        		<td class="values">${line['write_off_accumulated_depreciation']}</td>
+	        		<td class="values">${line['accumulated_depreciation']}</td>
 	        		<td class="values">${line['net_value']}</td>
 	        	</tr>
 	        	<tr class="space"><td colspan="13">&nbsp</td></tr>
@@ -144,18 +146,17 @@
 	        		<td></td>
 	        		<td>Total</td>
 	        		<td></td>
-	        		<td></td>
 					<td></td>
-	        		<td class="values">${line['purchase_value']}</td>
-	        		%if line['revaluated_value']:
-	        			<td class="values">${line['revaluated_value']}</td>
-					%else:
-					    <td></td>
-					%endif
-	        		<td class="values">${line['accumulated_depreciation']}</td>
+	        		<td class="values">${line['opening_cost']}</td>
+	        		<td class="values">${line['revaluation']}</td>
+	        		<td class="values">${line['devaluation']}</td>
+	        		<td class="values">${line['disposal_value']}</td>
+	        		<td class="values">${line['gross_book_value']}</td>
+	        		<td class="values">${line['profit_loss_disposal']}</td>
 	        		<td class="values">${line['accumulated_depreciation_previous_years']}</td>
 	        		<td class="values">${line['depreciation_current_year']}</td>
-	        		<td class="values">${line['depreciation_monthly_period']}</td>
+	        		<td class="values">${line['write_off_accumulated_depreciation']}</td>
+	        		<td class="values">${line['accumulated_depreciation']}</td>
 	        		<td class="values">${line['net_value']}</td>
 	        	</tr>
 	        	<tr class="space"><td colspan="13">&nbsp</td></tr>
