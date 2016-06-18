@@ -9,17 +9,16 @@
 Fixed Asset Register 
 ====================
 
-It shows (by category):
+It shows (by category, with posted/unposted evidence):
 - ID
 - Code
 - Name
-- Purchase Date
 - Depreciation Start Date 
 - Opening Value at the begin of the FY
-- Revaluation (delta)
-- Devaluation (delta)
-- Disposal (asset remove) = Opening Value + Revaluation - Devaluation
-- Gross Book Value = Opening Value + Revaluation - Devaluation - Disposal
+- Increases (revaluations, additions, etc...)
+- Decreases (devaluations, removals, etc..)
+- Gross Book Value = Opening Value + Increases - Decreases
+- Sales
 - Profit / (Loss) from Disposal = Sale Value - Net Book Value at the date of the disposal
 - Accumulated Depreciation Previous Years
 - Depreciation Current Year
