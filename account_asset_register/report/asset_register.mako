@@ -21,15 +21,15 @@
   		tr.subtotal td {
   			font-weight: bold;
   			line-height: 20px;
-			border-top: 1px solid;
-		    border-bottom: 2px solid;
+			border-top: 1px solid black;
+		    border-bottom: 2px solid black;
 		}
 		
 		tr.total td {
   			font-weight: bold;
   			line-height: 20px;
-			border-top: 1px solid;
-		    border-bottom: double;
+			border-top: 1px solid black;
+		    border-bottom: double black;
 		}
 		
 		tr.space td {
