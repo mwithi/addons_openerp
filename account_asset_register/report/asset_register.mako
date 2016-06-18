@@ -14,8 +14,8 @@
 		}
 		
 		table tr {
-                page-break-inside: avoid; 
-                page-break-after: auto;
+            page-break-inside: avoid; 
+            page-break-after: auto;
   		}
   		
   		tr.subtotal td {
@@ -53,6 +53,17 @@
 			font-weight: bold;
 		}
 		
+		.posted {
+			text-align: right;
+			color: black;
+		}
+		
+		.unposted {
+			text-align: right;
+			color: blue;
+			border: red;
+		}
+		
     </style>
 </head>
 <body>
@@ -75,6 +86,8 @@
             <td colspan="3" height="30px">
                 %for date in datelines():
                     Fiscal Year: ${date['fiscal_year']} (Values: ${date['currency']})
+                    <br />
+                    Unposted in blue
                 %endfor
             </td>
         </tr>
@@ -85,13 +98,12 @@
         	<th class="labels">ID</th>
             <th width="7%" class="labels">Code</th>
             <th width="13%" class="labels">Name</th>
-            
             <th>Depreciation<br />Start Date</th>
-            <th width="7%" class="values">Opening Value</th>
-            <th width="7%" class="values">Revaluation</th>
-            <th width="7%" class="values">Devaluation</th>
-            <th width="7%" class="values">Disposal</th>
+            <th width="7%" class="values">Opening<br />Value</th>
+            <th width="7%" class="values">Increases</th>
+            <th width="7%" class="values">Decreases</th>
             <th width="8%" class="values">Gross Book<br />Value</th>
+            <th width="7%" class="values">Sales</th>
             <th width="7%" class="values">Profit / (Loss)<br />on Disposal</th>
             <th width="7%" class="values">Accumulated Depreciation<br />Previous Years</th>
             <th width="7%" class="values">Depreciation Current Year</th>
@@ -114,11 +126,19 @@
 	        		<td class="values">${line['opening_cost']}</td>
 	        		<td class="values">${line['revaluation']}</td>
 	        		<td class="values">${line['devaluation']}</td>
-	        		<td class="values">${line['disposal_value']}</td>
 	        		<td class="values">${line['gross_book_value']}</td>
+	        		<td class="values">${line['sale_value']}</td>
 	        		<td class="values">${line['profit_loss_disposal']}</td>
-	        		<td class="values">${line['accumulated_depreciation_previous_years']}</td>
-	        		<td class="values">${line['depreciation_current_year']}</td>
+	        		%if line['previous_posted']:
+	        			<td class="values">${line['accumulated_depreciation_previous_years']}</td>
+	        		%else:
+	        			<td class="unposted">${line['accumulated_depreciation_previous_years']}</td>
+	        		%endif
+	        		%if line['current_posted']:
+	        			<td class="values">${line['depreciation_current_year']}</td>
+	        		%else:
+	        			<td class="unposted">${line['depreciation_current_year']}</td>
+	        		%endif
 	        		<td class="values">${line['write_off_accumulated_depreciation']}</td>
 	        		<td class="values">${line['accumulated_depreciation']}</td>
 	        		<td class="values">${line['net_value']}</td>
@@ -131,11 +151,19 @@
 	        		<td class="values">${line['opening_cost']}</td>
 	        		<td class="values">${line['revaluation']}</td>
 	        		<td class="values">${line['devaluation']}</td>
-	        		<td class="values">${line['disposal_value']}</td>
 	        		<td class="values">${line['gross_book_value']}</td>
+	        		<td class="values">${line['sale_value']}</td>
 	        		<td class="values">${line['profit_loss_disposal']}</td>
-	        		<td class="values">${line['accumulated_depreciation_previous_years']}</td>
-	        		<td class="values">${line['depreciation_current_year']}</td>
+	        		%if line['previous_posted']:
+	        			<td class="values">${line['accumulated_depreciation_previous_years']}</td>
+	        		%else:
+	        			<td class="unposted">${line['accumulated_depreciation_previous_years']}</td>
+	        		%endif
+	        		%if line['current_posted']:
+	        			<td class="values">${line['depreciation_current_year']}</td>
+	        		%else:
+	        			<td class="unposted">${line['depreciation_current_year']}</td>
+	        		%endif
 	        		<td class="values">${line['write_off_accumulated_depreciation']}</td>
 	        		<td class="values">${line['accumulated_depreciation']}</td>
 	        		<td class="values">${line['net_value']}</td>
@@ -150,11 +178,19 @@
 	        		<td class="values">${line['opening_cost']}</td>
 	        		<td class="values">${line['revaluation']}</td>
 	        		<td class="values">${line['devaluation']}</td>
-	        		<td class="values">${line['disposal_value']}</td>
 	        		<td class="values">${line['gross_book_value']}</td>
+	        		<td class="values">${line['sale_value']}</td>
 	        		<td class="values">${line['profit_loss_disposal']}</td>
-	        		<td class="values">${line['accumulated_depreciation_previous_years']}</td>
-	        		<td class="values">${line['depreciation_current_year']}</td>
+	        		%if line['previous_posted']:
+	        			<td class="values">${line['accumulated_depreciation_previous_years']}</td>
+	        		%else:
+	        			<td class="unposted">${line['accumulated_depreciation_previous_years']}</td>
+	        		%endif
+	        		%if line['current_posted']:
+	        			<td class="values">${line['depreciation_current_year']}</td>
+	        		%else:
+	        			<td class="unposted">${line['depreciation_current_year']}</td>
+	        		%endif
 	        		<td class="values">${line['write_off_accumulated_depreciation']}</td>
 	        		<td class="values">${line['accumulated_depreciation']}</td>
 	        		<td class="values">${line['net_value']}</td>
