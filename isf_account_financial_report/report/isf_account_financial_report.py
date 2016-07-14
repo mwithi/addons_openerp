@@ -26,7 +26,7 @@ from common_report_header import common_report_header
 from openerp.tools.translate import _
 
 _logger = logging.getLogger(__name__)
-_debug = True
+_debug = False
 
 class report_account_common(report_sxw.rml_parse, common_report_header):
 

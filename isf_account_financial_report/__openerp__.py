@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 {
-	'name': 'ISF Account Financial Report',
-	'version': '1.0',
-	'category': 'Reports',
-	'description': """
+    'name': 'ISF Account Financial Report',
+    'version': '1.0',
+    'category': 'Tools',
+    'description': """
 
 ISF Account Financial Report 
-============================
+==================================
 
 Modify the OE Financial Report with totals at the end of each section
 
@@ -18,12 +18,12 @@ Modify the OE Financial Report with totals at the end of each section
 * currency symbol removed in order to gain more space
 
 """,
-	'author': 'Alessandro Domanico (alessandro.domanico@informaticisenzafrontiere.org)',
-	'website': 'www.informaticisenzafrontiere.org',
-	'license': 'AGPL-3',
-	'depends': ['account_accountant'],
-	'data': [],
-	'demo': [],
-	'installable' : True,
+    'author': 'Alessandro Domanico (alessandro.domanico@informaticisenzafrontiere.org)',
+    'website': 'www.informaticisenzafrontiere.org',
+    'license': 'AGPL-3',
+    'depends': ['account_accountant'],
+    'data': [],
+    'demo': [],
+    'installable' : True,
 }
 
