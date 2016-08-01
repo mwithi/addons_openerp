@@ -10,7 +10,8 @@
 
 		table {
 		    border-spacing: 0px;
-		    page-break-inside: auto
+		    page-break-inside: auto;
+		    table-layout: fixed;
 		}
 		
 		table tr {
@@ -20,6 +21,7 @@
   		
   		tr.subtotal td {
   			font-weight: bold;
+			font-size: xx-small
   			line-height: 20px;
 			border-top: 1px solid black;
 		    border-bottom: 2px solid black;
@@ -27,6 +29,7 @@
 		
 		tr.total td {
   			font-weight: bold;
+			font-size: xx-small
   			line-height: 20px;
 			border-top: 1px solid black;
 		    border-bottom: double black;
@@ -37,31 +40,39 @@
 		}
 		
 		.values {
+			font-size: xx-small;
 			text-align: right;
 		}
 		
 		.dates {
 			text-align: center;
+			font-size: xx-small
 		}
 		
 		.labels {
+			font-size: xx-small
 			text-align: left;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 		
 		tr.category td {
+			font-size: xx-small
 			line-height: 20px;
 			font-weight: bold;
 		}
 		
 		.posted {
+			font-size: xx-small
 			text-align: right;
 			color: black;
 		}
 		
 		.unposted {
+			font-size: xx-small
 			text-align: right;
 			color: blue;
-			border: red;
 		}
 		
     </style>
@@ -93,23 +104,23 @@
         </tr>
     </table>
 
-    <table style="width: 100%; font-size: 12px;">
+    <table style="width: 100%;">
         <tr>
-        	<th class="labels">ID</th>
-            <th width="7%" class="labels">Code</th>
-            <th width="13%" class="labels">Name</th>
-            <th>Depreciation<br />Start Date</th>
-            <th width="7%" class="values">Opening<br />Value</th>
-            <th width="7%" class="values">Increases</th>
-            <th width="7%" class="values">Decreases</th>
-            <th width="8%" class="values">Gross Book<br />Value</th>
-            <th width="7%" class="values">Sales</th>
-            <th width="7%" class="values">Profit / (Loss)<br />on Disposal</th>
-            <th width="7%" class="values">Accumulated Depreciation<br />Previous Years</th>
-            <th width="7%" class="values">Depreciation Current Year</th>
-            <th width="7%" class="values">Write off<br />Accumulated Depreciation</th>
-            <th width="7%" class="values">Total Depreciation</th>
-            <th width="8%" class="values">Net Book<br />Value</th>
+        	<th width="3%" class="labels">ID</th>
+            <th width="4%" class="labels">Code</th>
+            <th class="labels">Name</th>
+            <th width="4%" class="labels">Deprec.<br />Start<br />Date</th>
+            <th width="6%" class="values">Opening<br />Value</th>
+            <th width="6%" class="values">Increases</th>
+            <th width="6%" class="values">Decreases</th>
+            <th width="7%" class="values">Gross Book<br />Value</th>
+            <th width="6%" class="values">Sales</th>
+            <th width="6%" class="values">Profit / (Loss)<br />on Disposal</th>
+            <th width="6%" class="values">Accumulated Depreciation<br />Previous Years</th>
+            <th width="6%" class="values">Depreciation Current Year</th>
+            <th width="6%" class="values">Write off<br />Accumulated Depreciation</th>
+            <th width="6%" class="values">Total Depreciation</th>
+            <th width="7%" class="values">Net Book<br />Value</th>
         </tr>
         %for line in lines():
         	%if line['type'] == 'category':
@@ -121,7 +132,7 @@
 				<tr>
 	        		<td>${line['id']}</td>
 	        		<td>${line['code']}</td>
-	        		<td>${line['asset']}</td>
+	        		<td class="labels">${line['asset']}</td>
 	        		<td class="dates">${line['date_start']}</td>
 	        		<td class="values">${line['opening_cost']}</td>
 	        		<td class="values">${line['revaluation']}</td>
@@ -146,7 +157,7 @@
         	%elif line['type'] == 'subtotal':
 	        	<tr class="subtotal">
 	        		<td></td>
-	        		<td>Sub-Total</td>
+	        		<td></td>
 	        		<td colspan="2">${line['category']}</td>
 	        		<td class="values">${line['opening_cost']}</td>
 	        		<td class="values">${line['revaluation']}</td>

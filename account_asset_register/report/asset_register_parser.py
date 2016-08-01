@@ -23,7 +23,7 @@ except:
 
     
 _logger = logging.getLogger(__name__)
-_debug = True
+_debug = False
 
 class asset_register(orm.Model):
     _name = "asset.register.view"
@@ -64,8 +64,15 @@ class asset_register_parser(report_sxw.rml_parse):
                     a.id,
                     c.name as category,
                     case 
-                        when c.method = 'linear' and c.method_number > 0 then 1::float / c.method_number 
-                        when c.method = 'linear' and c.method_number = 0 then 0::float
+                        when c.method_time = 'year' 
+                            and c.method = 'linear' 
+                            and c.method_number > 0 
+                        then 1::float / c.method_number
+                        when c.method_time = 'year' 
+                            and c.method = 'linear' 
+                            and c.method_number = 0 
+                        then 0::float
+                        when c.method_time = 'rate' then c.method_rate
                         else c.method_progress_factor 
                     end as factor, 
                     a.code, 
@@ -237,7 +244,7 @@ class asset_register_parser(report_sxw.rml_parse):
         self._update_view(self.cr, self.uid, params)
         
         obj_depreciation_line = self.pool.get('asset.register.view')
-        depreciation_lines_ids = obj_depreciation_line.search(self.cr, self.uid, [], order="category_id asc, id asc")
+        depreciation_lines_ids = obj_depreciation_line.search(self.cr, self.uid, [('category_id','in',asset_category_ids)], order="category_id asc, id asc")
         depreciation_lines = obj_depreciation_line.browse(self.cr, self.uid, depreciation_lines_ids)
         
         category = ''
@@ -276,7 +283,7 @@ class asset_register_parser(report_sxw.rml_parse):
                 res = {}
                 res['type'] = 'category'
                 category = line.category
-                res['category'] = line.category + ' - ' + locale.format("%0.0f", line.factor * 100) +'%'
+                res['category'] = line.category + ' - ' + locale.format("%0.2f", line.factor * 100) +'%'
                 self.result_values.append(res)
                 total = True
             
@@ -288,7 +295,7 @@ class asset_register_parser(report_sxw.rml_parse):
             res['code'] = line.code
             res['asset'] = line.asset
             res['date_purchase'] = line.date_purchase
-            res['date_start'] = line.date_start
+            res['date_start'] = line.date_start[:7]
             res['purchase_value'] = line.purchase_value
             res['opening_cost'] = line.opening_cost
             res['revaluated_value'] = line.revaluated_value
