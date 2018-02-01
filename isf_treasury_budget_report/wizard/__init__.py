@@ -1,0 +1,2 @@
+# WIZARD
+import isf_treasury_report_view
