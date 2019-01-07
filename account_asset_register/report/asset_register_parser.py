@@ -16,12 +16,6 @@ import locale
 import platform
 from collections import OrderedDict
 
-try:
-    locale.setlocale(locale.LC_ALL,'')
-except:
-    pass
-
-    
 _logger = logging.getLogger(__name__)
 _debug = False
 
@@ -106,7 +100,7 @@ class asset_register_parser(report_sxw.rml_parse):
                     
                 where
                     a.type <> 'view' 
-                    and d.line_date <= '""" + params['fy_date_stop'] + """'
+                    and a.date_purchase <= '""" + params['fy_date_stop'] + """'
                     and a.state <> 'draft'
                 
                 group by
@@ -125,7 +119,7 @@ class asset_register_parser(report_sxw.rml_parse):
         self.context = context
         self.result_date = []
         self.result_values = []
-        
+    
     def _get_fy_duration(self, cr, uid, fy_id, option='days', context=None):
         """
         Returns fiscal year duration.
@@ -182,17 +176,17 @@ class asset_register_parser(report_sxw.rml_parse):
         return self.result_date
     
     def _format_fields(self, res):
-        res['opening_cost'] = locale.format("%0.0f", res['opening_cost'], grouping=True)
-        res['revaluation'] = locale.format("%0.0f", res['revaluation'], grouping=True)
-        res['devaluation'] = locale.format("%0.0f", res['devaluation'], grouping=True)
-        res['profit_loss_disposal'] = locale.format("%0.0f", res['profit_loss_disposal'], grouping=True)
-        res['write_off_accumulated_depreciation'] = locale.format("%0.0f", res['write_off_accumulated_depreciation'], grouping=True)
-        res['sale_value'] = locale.format("%0.0f", res['sale_value'], grouping=True)
-        res['accumulated_depreciation'] = locale.format("%0.0f", res['accumulated_depreciation'], grouping=True)
-        res['accumulated_depreciation_previous_years'] = locale.format("%0.0f", res['accumulated_depreciation_previous_years'], grouping=True)
-        res['depreciation_current_year'] = locale.format("%0.0f", res['depreciation_current_year'], grouping=True)
-        res['gross_book_value'] = locale.format("%0.0f", res['gross_book_value'], grouping=True)
-        res['net_value'] = locale.format("%0.0f", res['net_value'], grouping=True)
+        res['opening_cost'] = res['opening_cost']
+        res['revaluation'] = res['revaluation']
+        res['devaluation'] = res['devaluation']
+        res['profit_loss_disposal'] = res['profit_loss_disposal']
+        res['write_off_accumulated_depreciation'] = res['write_off_accumulated_depreciation']
+        res['sale_value'] = res['sale_value']
+        res['accumulated_depreciation'] = res['accumulated_depreciation']
+        res['accumulated_depreciation_previous_years'] = res['accumulated_depreciation_previous_years']
+        res['depreciation_current_year'] = res['depreciation_current_year']
+        res['gross_book_value'] = res['gross_book_value']
+        res['net_value'] = res['net_value']
         
     def _get_totals(self):
         res = {}    
@@ -244,7 +238,7 @@ class asset_register_parser(report_sxw.rml_parse):
         self._update_view(self.cr, self.uid, params)
         
         obj_depreciation_line = self.pool.get('asset.register.view')
-        depreciation_lines_ids = obj_depreciation_line.search(self.cr, self.uid, [('category_id','in',asset_category_ids)], order="category_id asc, id asc")
+        depreciation_lines_ids = obj_depreciation_line.search(self.cr, self.uid, [('category_id','in',asset_category_ids)], order="category_id asc, code asc")
         depreciation_lines = obj_depreciation_line.browse(self.cr, self.uid, depreciation_lines_ids)
         
         category = ''
@@ -283,7 +277,7 @@ class asset_register_parser(report_sxw.rml_parse):
                 res = {}
                 res['type'] = 'category'
                 category = line.category
-                res['category'] = line.category + ' - ' + locale.format("%0.2f", line.factor * 100) +'%'
+                res['category'] = line.category + ' - ' + str(line.factor * 100)
                 self.result_values.append(res)
                 total = True
             
@@ -294,7 +288,7 @@ class asset_register_parser(report_sxw.rml_parse):
             res['category'] = line.category
             res['code'] = line.code
             res['asset'] = line.asset
-            res['date_purchase'] = line.date_purchase
+            res['date_purchase'] = line.date_purchase[:7]
             res['date_start'] = line.date_start[:7]
             res['purchase_value'] = line.purchase_value
             res['opening_cost'] = line.opening_cost
@@ -322,22 +316,33 @@ class asset_register_parser(report_sxw.rml_parse):
             
             #calculated fields
             #opening_cost is taken as the previous_value of the first revaluation in the FY
+            res['devaluation'] = 0.0
+            res['revaluation'] = 0.0
             if res['opening_cost'] is False and res['revaluated_value'] is not False: #if no revaluations in the FY but at least one in the past
                 res['opening_cost'] = res['revaluated_value']
             if res['opening_cost'] is False: #if opening_cost is still False (no revaluations at all)
-                res['opening_cost'] = res['purchase_value']
+                date_purchase = datetime.strptime(line.date_purchase, '%Y-%m-%d')
+                date_start = datetime.strptime(line.date_start, '%Y-%m-%d')
+                if _debug:
+                    _logger.debug('==> date_purchase : %s', date_purchase)
+                    _logger.debug('==> date_start : %s', date_start)
+                if date_purchase >= fy_date_start: #if the asset has been purchased in the FY, the opening cost (forward from previous FY) is 0.0 and the values has to be counted as increases
+                    res['opening_cost'] = 0.0
+                    res['revaluation'] += res['purchase_value']
+                else: #otherwise the opening cost is the same as the purchase value
+                    res['opening_cost'] = res['purchase_value']
             if res['revaluated_value'] is False: #if no revaluation this FY, duplicate the opening_cost
                 res['revaluated_value'] = res['opening_cost']
-                res['devaluation'] = 0.0
-                res['revaluation'] = 0.0
+                res['devaluation'] += 0.0
+                res['revaluation'] += 0.0
             else: #if a revaluation this FY, calculate the revaluation (devaluation) delta
                 delta = res['revaluated_value'] - res['opening_cost']
                 if delta > 0:
-                    res['revaluation'] = delta
-                    res['devaluation'] = 0.0
+                    res['revaluation'] += delta
+                    res['devaluation'] += 0.0
                 else:
-                    res['revaluation'] = 0.0
-                    res['devaluation'] = -delta
+                    res['revaluation'] += 0.0
+                    res['devaluation'] += -delta
             res['disposal_value'] = 0.0
             res['write_off_accumulated_depreciation'] = 0.0
             if res['date_remove']: #if removed this FY (removals in previous FYs already excluded before) 

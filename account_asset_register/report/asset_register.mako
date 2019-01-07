@@ -21,7 +21,7 @@
   		
   		tr.subtotal td {
   			font-weight: bold;
-			font-size: xx-small
+			font-size: xx-small;
   			line-height: 20px;
 			border-top: 1px solid black;
 		    border-bottom: 2px solid black;
@@ -29,7 +29,7 @@
 		
 		tr.total td {
   			font-weight: bold;
-			font-size: xx-small
+			font-size: xx-small;
   			line-height: 20px;
 			border-top: 1px solid black;
 		    border-bottom: double black;
@@ -46,11 +46,11 @@
 		
 		.dates {
 			text-align: center;
-			font-size: xx-small
+			font-size: xx-small;
 		}
 		
 		.labels {
-			font-size: xx-small
+			font-size: xx-small;
 			text-align: left;
 			overflow: hidden;
 			text-overflow: ellipsis;
@@ -58,19 +58,19 @@
 		}
 		
 		tr.category td {
-			font-size: xx-small
+			font-size: xx-small;
 			line-height: 20px;
 			font-weight: bold;
 		}
 		
 		.posted {
-			font-size: xx-small
+			font-size: xx-small;
 			text-align: right;
 			color: black;
 		}
 		
 		.unposted {
-			font-size: xx-small
+			font-size: xx-small;
 			text-align: right;
 			color: blue;
 		}
@@ -126,7 +126,7 @@
         	%if line['type'] == 'category':
 	        	<tr class="category">
 	        		<td></td>
-	    			<td colspan="14">${line['category']}</td>
+	    			<td colspan="14">${line['category']}%</td>
 	    		</tr>
 			%elif line['type'] == 'asset':
 				<tr>
@@ -134,50 +134,50 @@
 	        		<td>${line['code']}</td>
 	        		<td class="labels">${line['asset']}</td>
 	        		<td class="dates">${line['date_start']}</td>
-	        		<td class="values">${line['opening_cost']}</td>
-	        		<td class="values">${line['revaluation']}</td>
-	        		<td class="values">${line['devaluation']}</td>
-	        		<td class="values">${line['gross_book_value']}</td>
-	        		<td class="values">${line['sale_value']}</td>
-	        		<td class="values">${line['profit_loss_disposal']}</td>
+	        		<td class="values">${formatLang(line['opening_cost'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['revaluation'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['devaluation'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['gross_book_value'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['sale_value'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['profit_loss_disposal'], digits=2, grouping=True)}</td>
 	        		%if line['previous_posted']:
-	        			<td class="values">${line['accumulated_depreciation_previous_years']}</td>
+	        			<td class="values">${formatLang(line['accumulated_depreciation_previous_years'], digits=2, grouping=True)}</td>
 	        		%else:
-	        			<td class="unposted">${line['accumulated_depreciation_previous_years']}</td>
+	        			<td class="unposted">${formatLang(line['accumulated_depreciation_previous_years'], digits=2, grouping=True)}</td>
 	        		%endif
 	        		%if line['current_posted']:
-	        			<td class="values">${line['depreciation_current_year']}</td>
+	        			<td class="values">${formatLang(line['depreciation_current_year'], digits=2, grouping=True)}</td>
 	        		%else:
-	        			<td class="unposted">${line['depreciation_current_year']}</td>
+	        			<td class="unposted">${formatLang(line['depreciation_current_year'], digits=2, grouping=True)}</td>
 	        		%endif
-	        		<td class="values">${line['write_off_accumulated_depreciation']}</td>
-	        		<td class="values">${line['accumulated_depreciation']}</td>
-	        		<td class="values">${line['net_value']}</td>
+	        		<td class="values">${formatLang(line['write_off_accumulated_depreciation'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['accumulated_depreciation'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['net_value'], digits=2, grouping=True)}</td>
 	        	</tr>
         	%elif line['type'] == 'subtotal':
 	        	<tr class="subtotal">
 	        		<td></td>
 	        		<td></td>
 	        		<td colspan="2">${line['category']}</td>
-	        		<td class="values">${line['opening_cost']}</td>
-	        		<td class="values">${line['revaluation']}</td>
-	        		<td class="values">${line['devaluation']}</td>
-	        		<td class="values">${line['gross_book_value']}</td>
-	        		<td class="values">${line['sale_value']}</td>
-	        		<td class="values">${line['profit_loss_disposal']}</td>
+	        		<td class="values">${formatLang(line['opening_cost'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['revaluation'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['devaluation'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['gross_book_value'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['sale_value'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['profit_loss_disposal'], digits=2, grouping=True)}</td>
 	        		%if line['previous_posted']:
-	        			<td class="values">${line['accumulated_depreciation_previous_years']}</td>
+	        			<td class="values">${formatLang(line['accumulated_depreciation_previous_years'], digits=2, grouping=True)}</td>
 	        		%else:
-	        			<td class="unposted">${line['accumulated_depreciation_previous_years']}</td>
+	        			<td class="unposted">${formatLang(line['accumulated_depreciation_previous_years'], digits=2, grouping=True)}</td>
 	        		%endif
 	        		%if line['current_posted']:
-	        			<td class="values">${line['depreciation_current_year']}</td>
+	        			<td class="values">${formatLang(line['depreciation_current_year'], digits=2, grouping=True)}</td>
 	        		%else:
-	        			<td class="unposted">${line['depreciation_current_year']}</td>
+	        			<td class="unposted">${formatLang(line['depreciation_current_year'], digits=2, grouping=True)}</td>
 	        		%endif
-	        		<td class="values">${line['write_off_accumulated_depreciation']}</td>
-	        		<td class="values">${line['accumulated_depreciation']}</td>
-	        		<td class="values">${line['net_value']}</td>
+	        		<td class="values">${formatLang(line['write_off_accumulated_depreciation'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['accumulated_depreciation'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['net_value'], digits=2, grouping=True)}</td>
 	        	</tr>
 	        	<tr class="space"><td colspan="13">&nbsp</td></tr>
     		%elif line['type'] == 'total':
@@ -186,25 +186,25 @@
 	        		<td>Total</td>
 	        		<td></td>
 					<td></td>
-	        		<td class="values">${line['opening_cost']}</td>
-	        		<td class="values">${line['revaluation']}</td>
-	        		<td class="values">${line['devaluation']}</td>
-	        		<td class="values">${line['gross_book_value']}</td>
-	        		<td class="values">${line['sale_value']}</td>
-	        		<td class="values">${line['profit_loss_disposal']}</td>
+	        		<td class="values">${formatLang(line['opening_cost'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['revaluation'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['devaluation'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['gross_book_value'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['sale_value'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['profit_loss_disposal'], digits=2, grouping=True)}</td>
 	        		%if line['previous_posted']:
-	        			<td class="values">${line['accumulated_depreciation_previous_years']}</td>
+	        			<td class="values">${formatLang(line['accumulated_depreciation_previous_years'], digits=2, grouping=True)}</td>
 	        		%else:
-	        			<td class="unposted">${line['accumulated_depreciation_previous_years']}</td>
+	        			<td class="unposted">${formatLang(line['accumulated_depreciation_previous_years'], digits=2, grouping=True)}</td>
 	        		%endif
 	        		%if line['current_posted']:
-	        			<td class="values">${line['depreciation_current_year']}</td>
+	        			<td class="values">${formatLang(line['depreciation_current_year'], digits=2, grouping=True)}</td>
 	        		%else:
-	        			<td class="unposted">${line['depreciation_current_year']}</td>
+	        			<td class="unposted">${formatLang(line['depreciation_current_year'], digits=2, grouping=True)}</td>
 	        		%endif
-	        		<td class="values">${line['write_off_accumulated_depreciation']}</td>
-	        		<td class="values">${line['accumulated_depreciation']}</td>
-	        		<td class="values">${line['net_value']}</td>
+	        		<td class="values">${formatLang(line['write_off_accumulated_depreciation'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['accumulated_depreciation'], digits=2, grouping=True)}</td>
+	        		<td class="values">${formatLang(line['net_value'], digits=2, grouping=True)}</td>
 	        	</tr>
 	        	<tr class="space"><td colspan="13">&nbsp</td></tr>
     		%endif
